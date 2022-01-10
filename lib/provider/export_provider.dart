@@ -25,8 +25,7 @@ class ExportProvider extends BaseProvider {
 
   Future<bool> createCsv(BuildContext context) async {
     setState(ViewState.Busy);
-    var cartDetailString = SharedPref.prefs!.getString(SharedPref.EXPORT_LIST);
-    var scannedList = ScannedList.fromJson(json.decode(cartDetailString));
+    var scannedList = SharedPref.getStoredData();
     List<List<dynamic>> rows = [];
     List<dynamic> row = [];
     row.add("Sr No.");

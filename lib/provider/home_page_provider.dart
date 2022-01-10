@@ -43,15 +43,13 @@ class HomePageProvider extends BaseProvider {
     if (exportListString != null) {
       var scannedList = ScannedList.fromJson(json.decode(exportListString));
       scannedList.data!.add(data);
-      String scannedListString = jsonEncode(scannedList.toJson());
-      SharedPref.prefs!.setString(SharedPref.EXPORT_LIST, scannedListString);
+      SharedPref.updateDataInSharedPref(scannedList);
     } else {
       List<ScannedData> firstItemToList = [];
       firstItemToList.add(data);
       var scannedList = ScannedList();
       scannedList.data = firstItemToList;
-      String scannedListString = jsonEncode(scannedList.toJson());
-      SharedPref.prefs!.setString(SharedPref.EXPORT_LIST, scannedListString);
+      SharedPref.updateDataInSharedPref(scannedList);
     }
   }
 }
