@@ -19,9 +19,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:open_mail_app/open_mail_app.dart';
 
 class Export extends StatefulWidget {
-  final List<dynamic> csv;
-
-  const Export({Key? key, required this.csv}) : super(key: key);
+  const Export({Key? key}) : super(key: key);
   @override
   _ExportState createState() => _ExportState();
 }
@@ -62,7 +60,6 @@ class _ExportState extends State<Export> {
           body: BaseView<ExportProvider>(
             onModelReady: (provider) {
 
-              print(widget.csv);
             },
             builder: (context, provider, _) {
               return SingleChildScrollView(
@@ -221,8 +218,7 @@ class _ExportState extends State<Export> {
                             DialogHelper.showMessage(
                                 context, 'Please enter correct export pin');
                           } else {
-                            provider
-                                .createCsv(context, widget.csv)
+                            provider.createCsv(context)
                                 .then((value) async {
                               if (value) {
 

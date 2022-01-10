@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:crib_stock/enum/viewstate.dart';
@@ -12,28 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base_provider.dart';
 
-class HomePageProvider extends BaseProvider{
-
+class HomePageProvider extends BaseProvider {
   final LocalStorage storage = new LocalStorage('localstorage_app');
-  String scanBarcode='';
+  String scanBarcode = '';
   final quantity = TextEditingController();
-  List<String> records=[];
-
-
-  List<dynamic> csv = [
-
-    ["Scan Number", "Quantity"],
-
-  ];
-
-  List<dynamic> exportlist=[];
-
-
-
-
 
   Future<void> scanBarcodeNormal() async {
-
     setState(ViewState.Busy);
     String barcodeScanRes;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -48,43 +31,27 @@ class HomePageProvider extends BaseProvider{
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-setState(ViewState.Idle);
-      scanBarcode = barcodeScanRes;
-
+    setState(ViewState.Idle);
+    scanBarcode = barcodeScanRes;
   }
 
-  Future<void> addrecords() async{
-
-    setState(ViewState.Busy);
-    records.add(scanBarcode);
-    records.add(quantity.text);
-    setState(ViewState.Idle);
-
-    records=records;
-    csv.add(records);
-    csv=csv;
-    records=[];
-    /*String csvfile = jsonEncode(Csvlist(scannedList: scannedList).toJson());
-    SharedPref.prefs!.setString('csv', csv);*/
-
-    setState(ViewState.Idle);
-    quantity.text='';
-    scanBarcode='';
-  }
-
-  Future<void> getList(BuildContext context)  async {
-    setState(ViewState.Busy);
-
-    var CSVFILE =SharedPref.prefs?.getString('csv');
-    if (CSVFILE?.isNotEmpty == true) {
-      var data = Csvlist.fromJson(json.decode(CSVFILE!));
-      print(data);
-
+  Future<void> addRecords() async {
+    var data = ScannedData();
+    data.quantity = quantity.text;
+    data.scanPartNumber = scanBarcode;
+    var exportListString = SharedPref.prefs!.getString(SharedPref.EXPORT_LIST);
+    if (exportListString != null) {
+      var scannedList = ScannedList.fromJson(json.decode(exportListString));
+      scannedList.data!.add(data);
+      String scannedListString = jsonEncode(scannedList.toJson());
+      SharedPref.prefs!.setString(SharedPref.EXPORT_LIST, scannedListString);
+    } else {
+      List<ScannedData> firstItemToList = [];
+      firstItemToList.add(data);
+      var scannedList = ScannedList();
+      scannedList.data = firstItemToList;
+      String scannedListString = jsonEncode(scannedList.toJson());
+      SharedPref.prefs!.setString(SharedPref.EXPORT_LIST, scannedListString);
     }
-    setState(ViewState.Idle);
-
   }
-
-
-
 }

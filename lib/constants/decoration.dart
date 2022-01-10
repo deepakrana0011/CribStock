@@ -10,27 +10,12 @@ class ViewDecoration{
   static InputDecoration inputDecorationWithCurve(
       String fieldname ,{Widget? prefixIcon,Widget? suffixIcon}) {
     return InputDecoration(
-
         prefixIcon: prefixIcon==null?null:prefixIcon,
         suffixIcon: suffixIcon==null?null:suffixIcon,
-        prefixIconConstraints: BoxConstraints(
-          maxWidth: 40,
-          maxHeight: 45
-        ),
-        suffixIconConstraints: BoxConstraints(
-            maxWidth: 40,
-            maxHeight: 45
-
-        ),
-
-        contentPadding: EdgeInsets.fromLTRB(10, 2, 10, 0),
-
         hintText: fieldname,
         filled: true,
         hintStyle: textRegular(ColorConstants.blackcolor, DimensionConstants.d16.sp),
         isDense: true,
-
-
 
         fillColor: ColorConstants.whiteColor,
         enabledBorder: OutlineInputBorder(

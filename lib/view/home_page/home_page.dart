@@ -22,12 +22,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final scannumber = TextEditingController();
 
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
 
   @override
   void initState() {
@@ -43,32 +40,36 @@ class _HomePageState extends State<HomePage> {
           key: _scaffoldKey,
           body: BaseView<HomePageProvider>(
             onModelReady: (provider) {
-              provider.getList(context);
+             // provider.getList(context);
             },
             builder: (context, provider, _) {
               return SingleChildScrollView(
                 child: Padding(
-                  padding:  EdgeInsets.only(left: DimensionConstants.d20.w,right: DimensionConstants.d20.w),
+                  padding: EdgeInsets.only(
+                      left: DimensionConstants.d20.w,
+                      right: DimensionConstants.d20.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
                         height: DimensionConstants.d143.h,
                       ),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             "Crib Stock",
-                          ).boldText(ColorConstants.headingColor, DimensionConstants.d30.sp,TextAlign.center),
-
+                          ).boldText(ColorConstants.headingColor,
+                              DimensionConstants.d30.sp, TextAlign.center),
                         ],
-                      ) ,
+                      ),
                       SizedBox(
                         height: DimensionConstants.d37.h,
                       ),
-                      Text('Scan Part Number').mediumText(ColorConstants.colorBlack, DimensionConstants.d16.sp, TextAlign.left),
+                      Text('Scan Part Number').mediumText(
+                          ColorConstants.colorBlack,
+                          DimensionConstants.d16.sp,
+                          TextAlign.left),
                       SizedBox(
                         height: DimensionConstants.d15.h,
                       ),
@@ -79,48 +80,39 @@ class _HomePageState extends State<HomePage> {
                         topleftradius: DimensionConstants.d6.r,
                         bottomRightradius: DimensionConstants.d6.r,
                         bottomleftradius: DimensionConstants.d6.r,
-                        decoration: BoxDecoration(
-
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0.0, 0.75),
-                                blurRadius: 12,
-                                color: ColorConstants.borderColor,
-                              )
-                            ]
-                        ),
+                        decoration: BoxDecoration(boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0.0, 0.75),
+                            blurRadius: 12,
+                            color: ColorConstants.borderColor,
+                          )
+                        ]),
                         child: Center(
                           child: TextFormField(
-
                             readOnly: true,
-                            onTap: (){
+                            onTap: () {
                               provider.scanBarcodeNormal();
                             },
-
-                            textCapitalization:
-                            TextCapitalization.sentences,
-                            cursorColor:
-                            ColorConstants.colorButtonbgColor,
+                            textCapitalization: TextCapitalization.sentences,
+                            cursorColor: ColorConstants.colorButtonbgColor,
                             controller: scannumber,
                             style: ViewDecoration.textFieldStyle(
-                                DimensionConstants
-                                    .d16.sp),
+                                DimensionConstants.d16.sp),
                             decoration: ViewDecoration.inputDecorationWithCurve(
-
-                                provider.scanBarcode,
-                              ),
+                              provider.scanBarcode,
+                            ),
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.text,
-
                           ),
                         ),
                       ),
-
                       SizedBox(
                         height: DimensionConstants.d15.h,
                       ),
-
-                      Text('Enter Quantity').mediumText(ColorConstants.colorBlack, DimensionConstants.d16.sp, TextAlign.left),
+                      Text('Enter Quantity').mediumText(
+                          ColorConstants.colorBlack,
+                          DimensionConstants.d16.sp,
+                          TextAlign.left),
                       SizedBox(
                         height: DimensionConstants.d15.h,
                       ),
@@ -131,111 +123,79 @@ class _HomePageState extends State<HomePage> {
                         topleftradius: DimensionConstants.d6.r,
                         bottomRightradius: DimensionConstants.d6.r,
                         bottomleftradius: DimensionConstants.d6.r,
-                        decoration: BoxDecoration(
-
-                            boxShadow: [
-                              BoxShadow(
-                                offset: Offset(0.0, 0.75),
-                                blurRadius: 12,
-                                color: ColorConstants.borderColor,
-                              )
-                            ]
-                        ),
+                        decoration: BoxDecoration(boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0.0, 0.75),
+                            blurRadius: 12,
+                            color: ColorConstants.borderColor,
+                          )
+                        ]),
                         child: Center(
                           child: TextFormField(
-
-
-                            textCapitalization:
-                            TextCapitalization.sentences,
-                            cursorColor:
-                            ColorConstants.colorButtonbgColor,
+                            textCapitalization: TextCapitalization.sentences,
+                            cursorColor: ColorConstants.colorButtonbgColor,
                             controller: provider.quantity,
                             style: ViewDecoration.textFieldStyle(
-                                DimensionConstants
-                                    .d16.sp),
+                                DimensionConstants.d16.sp),
                             decoration: ViewDecoration.inputDecorationWithCurve(
                               "",
                             ),
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
-
                           ),
                         ),
                       ),
-
-
                       SizedBox(
                         height: DimensionConstants.d28.h,
                       ),
-
-                      provider.state == ViewState.Busy?
-                      Center(
-                        child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(ColorConstants.colorButtonbgColor)
-
-                        ),
-                      ): GestureDetector(
-                        onTap: () {
-                          if(provider.scanBarcode==''){
-                            DialogHelper.showMessage(context, 'Please enter scan number');
-                          }
-                          else if(provider.quantity.text==''){
-                            DialogHelper.showMessage(context, 'Please enter quantity');
-
-                          }
-
-
-                          else{
-                            KeyboardHelper.hideKeyboard(context);
-                            provider.addrecords();
-
-                          }
-
-
-                        },
-                        child: RoundCornerShape(
-                            height: DimensionConstants.d52.h,
-                            bgColor: ColorConstants.colorButtonbgColor,
-                            topRightradius: DimensionConstants.d6.r,
-                            topleftradius: DimensionConstants.d6.r,
-                            bottomRightradius: DimensionConstants.d6.r,
-                            bottomleftradius: DimensionConstants.d6.r,
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Submit',
-                                  ).boldText(
-                                      ColorConstants.whiteColor,
-                                      DimensionConstants.d16.sp,
-                                      TextAlign.center),
-
-                                ],
-                              ),
+                      provider.state == ViewState.Busy
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      ColorConstants.colorButtonbgColor)),
                             )
-                        ),
-                      ),
+                          : GestureDetector(
+                              onTap: () {
+                                if (provider.scanBarcode == '') {
+                                  DialogHelper.showMessage(
+                                      context, 'Please enter scan number');
+                                } else if (provider.quantity.text == '') {
+                                  DialogHelper.showMessage(
+                                      context, 'Please enter quantity');
+                                } else {
+                                  KeyboardHelper.hideKeyboard(context);
+                                  provider.addRecords();
+                                }
+                              },
+                              child: RoundCornerShape(
+                                  height: DimensionConstants.d52.h,
+                                  bgColor: ColorConstants.colorButtonbgColor,
+                                  topRightradius: DimensionConstants.d6.r,
+                                  topleftradius: DimensionConstants.d6.r,
+                                  bottomRightradius: DimensionConstants.d6.r,
+                                  bottomleftradius: DimensionConstants.d6.r,
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Submit',
+                                        ).boldText(
+                                            ColorConstants.whiteColor,
+                                            DimensionConstants.d16.sp,
+                                            TextAlign.center),
+                                      ],
+                                    ),
+                                  )),
+                            ),
                       SizedBox(
                         height: DimensionConstants.d24.h,
                       ),
-
-
                       GestureDetector(
                         onTap: () {
-                          if(provider.csv==[]){
-                            DialogHelper.showMessage(context, 'You dont have anything to export');
-                          }
-                          else{
-                            Navigator.of(context).pushNamed(
-                                RoutesConstants.Export,
-                                arguments: provider.exportlist
-                            );
-
-                          }
-
-
+                          Navigator.of(context)
+                              .pushNamed(RoutesConstants.EXPORT);
                         },
                         child: RoundCornerShape(
                             height: DimensionConstants.d52.h,
@@ -246,8 +206,7 @@ class _HomePageState extends State<HomePage> {
                             bottomleftradius: DimensionConstants.d6.r,
                             child: Center(
                               child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     'Export',
@@ -255,23 +214,22 @@ class _HomePageState extends State<HomePage> {
                                       ColorConstants.whiteColor,
                                       DimensionConstants.d16.sp,
                                       TextAlign.center),
-
                                 ],
                               ),
-                            )
-                        ),
+                            )),
                       ),
                       SizedBox(
                         height: DimensionConstants.d24.h,
                       ),
                       GestureDetector(
                         onTap: () {
-                          DialogHelper.showDialogWithTwoButtons(context, 'Exit', 'Yes', 'Cancel', 'Are you sure you want to exit?',
-                              positiveButtonPress: (){
-                                SystemNavigator.pop();
-                              }, negativeButtonPress: () {
-                                Navigator.pop(context);
-                              });
+                          DialogHelper.showDialogWithTwoButtons(context, 'Exit',
+                              'Yes', 'Cancel', 'Are you sure you want to exit?',
+                              positiveButtonPress: () {
+                            SystemNavigator.pop();
+                          }, negativeButtonPress: () {
+                            Navigator.pop(context);
+                          });
                         },
                         child: RoundCornerShape(
                             height: DimensionConstants.d52.h,
@@ -282,8 +240,7 @@ class _HomePageState extends State<HomePage> {
                             bottomleftradius: DimensionConstants.d6.r,
                             child: Center(
                               child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     'Exit',
@@ -291,13 +248,10 @@ class _HomePageState extends State<HomePage> {
                                       ColorConstants.whiteColor,
                                       DimensionConstants.d16.sp,
                                       TextAlign.center),
-
                                 ],
                               ),
-                            )
-                        ),
+                            )),
                       ),
-
                     ],
                   ),
                 ),

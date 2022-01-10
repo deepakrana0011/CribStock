@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crib_stock/enum/viewstate.dart';
 import 'package:crib_stock/helper/shared_pref.dart';
+import 'package:crib_stock/model/csv_model.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +23,25 @@ class ExportProvider extends BaseProvider {
   final confirmemailadress = TextEditingController();
   final pin = TextEditingController();
 
-
-  Future<bool> createCsv(BuildContext context,  csv) async {
+  Future<bool> createCsv(BuildContext context) async {
     setState(ViewState.Busy);
-    print(csv);
-
-    String csvData = ListToCsvConverter().convert(csv);
+    var cartDetailString = SharedPref.prefs!.getString(SharedPref.EXPORT_LIST);
+    var scannedList = ScannedList.fromJson(json.decode(cartDetailString));
+    List<List<dynamic>> rows = [];
+    List<dynamic> row = [];
+    row.add("Sr No.");
+    row.add("Quantity");
+    row.add("Part Number");
+    rows.add(row);
+    for (int i = 0; i < scannedList.data!.length; i++) {
+      List<dynamic> row = [];
+      row.add(i + 1);
+      row.add(scannedList.data![i].quantity);
+      row.add(scannedList.data![i].scanPartNumber);
+      rows.add(row);
+    }
+    print(rows);
+    String csvData = ListToCsvConverter().convert(rows);
     final String directory = (await getApplicationSupportDirectory()).path;
     final path = "$directory/csv-${DateTime.now()}.csv";
     print(path);
@@ -35,28 +50,25 @@ class ExportProvider extends BaseProvider {
     final Email email = Email(
       recipients: [emailadress.text],
       attachmentPaths: [file.path],
-
     );
-
     await FlutterEmailSender.send(email);
-   /* Navigator.of(context).push(
+    /* Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) {
           return LoadCsvDataScreen(path: path);
         },
       ),
     );*/
-   
+
     return true;
   }
-  Future<void> getList(BuildContext context)  async {
 
+  Future<void> getList(BuildContext context) async {
     setState(ViewState.Busy);
     var ready = await storage.ready;
     print('searching ${'name'} is $ready');
-     storage.getItem('name');
+    storage.getItem('name');
     print(storage.getItem('name'));
     setState(ViewState.Idle);
-
   }
 }

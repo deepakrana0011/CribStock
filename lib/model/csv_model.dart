@@ -1,35 +1,38 @@
-class Csvlist {
-  Csvlist({
-    required this.scannedList,
-  });
-
-  List<ScannedList> scannedList;
-
-  factory Csvlist.fromJson(Map<String, dynamic> json) => Csvlist(
-    scannedList: List<ScannedList>.from(json["scannedList"].map((x) => ScannedList.fromJson(x))),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "scannedList": List<dynamic>.from(scannedList.map((x) => x.toJson())),
-  };
-}
-
 class ScannedList {
   ScannedList({
-    required this.quantity,
-    required this.scanNumber,
+    this.data,
   });
 
-  int quantity;
-  String scanNumber;
+  List<ScannedData>? data;
 
   factory ScannedList.fromJson(Map<String, dynamic> json) => ScannedList(
-    quantity: json["quantity"],
-    scanNumber: json["scanNumber"],
-  );
+        data: List<ScannedData>.from(json["data"].map((x) => ScannedData.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "quantity": quantity,
-    "scanNumber": scanNumber,
-  };
+        "data": data != null
+            ? List<dynamic>.from(data!.map((x) => x.toJson()))
+            : [],
+      };
+}
+
+class ScannedData {
+  ScannedData({
+    this.quantity,
+    this.scanPartNumber,
+  });
+
+  String? quantity;
+  String? scanPartNumber;
+
+  factory ScannedData.fromJson(Map<String, dynamic> json) => ScannedData(
+        quantity: json["quantity"],
+        scanPartNumber:
+            json["scanPartNumber"] == null ? null : json["scanPartNumber"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "quantity": quantity,
+        "scanPartNumber": scanPartNumber == null ? null : scanPartNumber,
+      };
 }
