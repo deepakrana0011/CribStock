@@ -22,7 +22,9 @@ class Router {
 
       case RoutesConstants.Export:
         return MaterialPageRoute(
-            builder: (_) => Export(), settings: settings);
+            builder: (_) => Export(
+              csv: settings.arguments as List<dynamic>,
+            ), settings: settings);
 
 
 

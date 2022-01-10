@@ -1,20 +1,34 @@
 
+import 'dart:convert';
+
 import 'package:crib_stock/enum/viewstate.dart';
 import 'package:crib_stock/helper/shared_pref.dart';
+import 'package:crib_stock/model/csv_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base_provider.dart';
 
 class HomePageProvider extends BaseProvider{
 
+  final LocalStorage storage = new LocalStorage('localstorage_app');
   String scanBarcode='';
   final quantity = TextEditingController();
-  List<dynamic> records=[];
-  List<String> exportlist=[];
-  List csv=[];
+  List<String> records=[];
+
+
+  List<dynamic> csv = [
+
+    ["Scan Number", "Quantity"],
+
+  ];
+
+  List<dynamic> exportlist=[];
+
+
 
 
 
@@ -41,31 +55,34 @@ setState(ViewState.Idle);
 
   Future<void> addrecords() async{
 
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
     setState(ViewState.Busy);
     records.add(scanBarcode);
     records.add(quantity.text);
     setState(ViewState.Idle);
-    exportlist.add(records.cast().toString());
-    setState(ViewState.Idle);
-    records=[];
 
-    exportlist=exportlist;
-    print(exportlist);
+    records=records;
+    csv.add(records);
+    csv=csv;
+    records=[];
+    /*String csvfile = jsonEncode(Csvlist(scannedList: scannedList).toJson());
+    SharedPref.prefs!.setString('csv', csv);*/
+
     setState(ViewState.Idle);
-    preferences.setStringList('csv', exportlist);
     quantity.text='';
     scanBarcode='';
-
   }
 
-  Future<void> getList(BuildContext context) async {
+  Future<void> getList(BuildContext context)  async {
     setState(ViewState.Busy);
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    csv=preferences.getStringList('csv');
+
+    var CSVFILE =SharedPref.prefs?.getString('csv');
+    if (CSVFILE?.isNotEmpty == true) {
+      var data = Csvlist.fromJson(json.decode(CSVFILE!));
+      print(data);
+
+    }
     setState(ViewState.Idle);
-    print(csv);
+
   }
 
 

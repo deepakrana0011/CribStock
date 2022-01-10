@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
 
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool _passwordVisible = false;
+
 
   @override
   void initState() {
@@ -228,8 +228,10 @@ class _HomePageState extends State<HomePage> {
                             DialogHelper.showMessage(context, 'You dont have anything to export');
                           }
                           else{
-                            Navigator.of(context)
-                                .pushNamed(RoutesConstants.Export);
+                            Navigator.of(context).pushNamed(
+                                RoutesConstants.Export,
+                                arguments: provider.exportlist
+                            );
 
                           }
 
