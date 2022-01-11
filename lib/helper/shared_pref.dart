@@ -21,7 +21,7 @@ class SharedPref{
   }
 
   static clearSharePref() async {
-
+    SharedPref.prefs!.setString(SharedPref.EXPORT_LIST, null);
 
   }
 

@@ -6,20 +6,4 @@ class Validations {
     return regex.hasMatch(value);
   }
 
-  static bool terms(bool value) {
-   return true;
-  }
-
-
-  static bool validCharacters(String value) {
-    RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
-    return regex.hasMatch(value);
-  }
-
-  static bool validateStructure(String value) {
-    String pattern =
-        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
-    RegExp regExp = new RegExp(pattern);
-    return regExp.hasMatch(value);
-  }
 }

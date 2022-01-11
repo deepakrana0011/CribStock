@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crib_stock/base_view.dart';
@@ -9,6 +10,8 @@ import 'package:crib_stock/enum/viewstate.dart';
 import 'package:crib_stock/extensions/allExtensions.dart';
 import 'package:crib_stock/helper/dialog_helper.dart';
 import 'package:crib_stock/helper/keyboard_helper.dart';
+import 'package:crib_stock/helper/shared_pref.dart';
+import 'package:crib_stock/model/csv_model.dart';
 import 'package:crib_stock/provider/home_page_provider.dart';
 import 'package:crib_stock/widgets/roundCornerShape.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final scannumber = TextEditingController();
+  var scannedList = ScannedList();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -40,7 +44,7 @@ class _HomePageState extends State<HomePage> {
           key: _scaffoldKey,
           body: BaseView<HomePageProvider>(
             onModelReady: (provider) {
-             // provider.getList(context);
+
             },
             builder: (context, provider, _) {
               return SingleChildScrollView(
@@ -83,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(boxShadow: [
                           BoxShadow(
                             offset: Offset(0.0, 0.75),
-                            blurRadius: 12,
+                            blurRadius: DimensionConstants.d12,
                             color: ColorConstants.borderColor,
                           )
                         ]),
@@ -93,9 +97,8 @@ class _HomePageState extends State<HomePage> {
                             onTap: () {
                               provider.scanBarcodeNormal();
                             },
-                            textCapitalization: TextCapitalization.sentences,
+
                             cursorColor: ColorConstants.colorButtonbgColor,
-                            controller: scannumber,
                             style: ViewDecoration.textFieldStyle(
                                 DimensionConstants.d16.sp),
                             decoration: ViewDecoration.inputDecorationWithCurve(
@@ -126,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                         decoration: BoxDecoration(boxShadow: [
                           BoxShadow(
                             offset: Offset(0.0, 0.75),
-                            blurRadius: 12,
+                            blurRadius: DimensionConstants.d12,
                             color: ColorConstants.borderColor,
                           )
                         ]),
@@ -142,19 +145,16 @@ class _HomePageState extends State<HomePage> {
                             ),
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            ],
                           ),
                         ),
                       ),
                       SizedBox(
                         height: DimensionConstants.d28.h,
                       ),
-                      provider.state == ViewState.Busy
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      ColorConstants.colorButtonbgColor)),
-                            )
-                          : GestureDetector(
+                      GestureDetector(
                               onTap: () {
                                 if (provider.scanBarcode == '') {
                                   DialogHelper.showMessage(
@@ -164,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                                       context, 'Please enter quantity');
                                 } else {
                                   KeyboardHelper.hideKeyboard(context);
-                                  provider.addRecords();
+                                  provider.addRecords(context);
                                 }
                               },
                               child: RoundCornerShape(
@@ -194,8 +194,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(RoutesConstants.EXPORT);
+                          var exportListString = SharedPref.prefs!.getString(SharedPref.EXPORT_LIST);
+
+                          if(exportListString==null){
+                            DialogHelper.showMessage(
+                                context, "You don't have anything to export");
+                          }
+                          else{
+                            Navigator.of(context)
+                                .pushNamed(RoutesConstants.EXPORT);
+                          }
+
                         },
                         child: RoundCornerShape(
                             height: DimensionConstants.d52.h,
@@ -228,6 +237,7 @@ class _HomePageState extends State<HomePage> {
                               positiveButtonPress: () {
                             SystemNavigator.pop();
                           }, negativeButtonPress: () {
+                                KeyboardHelper.hideKeyboard(context);
                             Navigator.pop(context);
                           });
                         },

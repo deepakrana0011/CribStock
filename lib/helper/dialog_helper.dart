@@ -63,38 +63,7 @@ class DialogHelper {
 
 
 
-  static Future showDialogWithOneButton(
-      BuildContext context,
-      String title,
-      String content, {
-        required VoidCallback positiveButtonPress,
-        barrierDismissible = true,
-      }) {
-    return showDialog(
-      context: context,
-      barrierDismissible: barrierDismissible,
-      builder: (BuildContext buildContext) {
-        return AlertDialog(
-          title: Text(title, textAlign: TextAlign.center),
-          content: Text(content),
-          shape: border,
-          actions: <Widget>[
-            FlatButton(
-              child: Text('ok'.toUpperCase()).mediumText(
-                  ColorConstants.primaryColor, 18, TextAlign.center),
-              onPressed: () {
-                if (positiveButtonPress != null) {
-                  positiveButtonPress();
-                } else {
-                  Navigator.of(context, rootNavigator: true).pop();
-                }
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
+
 
   static showMessage(BuildContext context, String message) {
     Flushbar(

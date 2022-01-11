@@ -4,19 +4,16 @@ import 'package:crib_stock/base_view.dart';
 import 'package:crib_stock/constants/color_constants.dart';
 import 'package:crib_stock/constants/decoration.dart';
 import 'package:crib_stock/constants/dimension_constants.dart';
+import 'package:crib_stock/constants/validations.dart';
 import 'package:crib_stock/extensions/allExtensions.dart';
 import 'package:crib_stock/helper/dialog_helper.dart';
 import 'package:crib_stock/helper/keyboard_helper.dart';
 import 'package:crib_stock/provider/export_provider.dart';
-import 'package:crib_stock/provider/home_page_provider.dart';
 import 'package:crib_stock/widgets/roundCornerShape.dart';
-import 'package:csv/csv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:open_mail_app/open_mail_app.dart';
 
 class Export extends StatefulWidget {
   const Export({Key? key}) : super(key: key);
@@ -28,7 +25,7 @@ class _ExportState extends State<Export> {
 
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool _passwordVisible = false;
+
 
   @override
   void initState() {
@@ -108,7 +105,7 @@ class _ExportState extends State<Export> {
                         ]),
                         child: Center(
                           child: TextFormField(
-                            textCapitalization: TextCapitalization.sentences,
+
                             cursorColor: ColorConstants.colorButtonbgColor,
                             controller: provider.emailadress,
                             style: ViewDecoration.textFieldStyle(
@@ -147,7 +144,7 @@ class _ExportState extends State<Export> {
                         ]),
                         child: Center(
                           child: TextFormField(
-                            textCapitalization: TextCapitalization.sentences,
+
                             cursorColor: ColorConstants.colorButtonbgColor,
                             controller: provider.confirmemailadress,
                             style: ViewDecoration.textFieldStyle(
@@ -186,7 +183,7 @@ class _ExportState extends State<Export> {
                         ]),
                         child: Center(
                           child: TextFormField(
-                            textCapitalization: TextCapitalization.sentences,
+
                             cursorColor: ColorConstants.colorButtonbgColor,
                             controller: provider.pin,
                             style: ViewDecoration.textFieldStyle(
@@ -207,7 +204,12 @@ class _ExportState extends State<Export> {
                           if (provider.emailadress.text == '') {
                             DialogHelper.showMessage(
                                 context, 'Please enter email address');
-                          } else if (provider.emailadress.text !=
+                          }
+                          else if (!Validations.emailValidation(provider.emailadress.text)) {
+                            DialogHelper.showMessage(
+                                context, 'Invalid email');
+                          }
+                          else if (provider.emailadress.text !=
                               provider.confirmemailadress.text) {
                             DialogHelper.showMessage(
                                 context, 'Email address do not matches');
@@ -218,13 +220,7 @@ class _ExportState extends State<Export> {
                             DialogHelper.showMessage(
                                 context, 'Please enter correct export pin');
                           } else {
-                            provider.createCsv(context)
-                                .then((value) async {
-                              if (value) {
-
-
-                              }
-                            });
+                            provider.createCsv(context);
                           }
                         },
                         child: RoundCornerShape(
@@ -260,25 +256,7 @@ class _ExportState extends State<Export> {
     );
   }
 
-  void showNoMailAppsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Open Mail App"),
-          content: Text("No mail apps installed"),
-          actions: <Widget>[
-            TextButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
+
 }
 
 //
